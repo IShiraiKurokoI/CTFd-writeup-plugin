@@ -276,23 +276,35 @@ def load(app):
             except:
                 pass
 
-            uploadStr = "Upload Writeup"
-
-            if language == "zh":
-                uploadStr = "上传题解"
-
             inserted = False
             for window in root.xpath('/html/body/main/div[@id="challenge-window"]'):
-                link = etree.Element(
-                    'button',
-                    attrib={
-                        'class': 'btn btn-md btn-primary btn-outlined float-right',
-                        'style': 'margin-right:140px;margin-top:40px;',
-                        'onclick': 'window.open("/plugins/writeup/upload")',
-                    }
-                )
-                link.text=uploadStr
-                window.addnext(link)
+                if language == "zh":
+                    link = etree.Element(
+                        'button',
+                        attrib={
+                            'class': 'btn btn-md btn-primary btn-outlined float-right',
+                            'style': 'position: sticky; top: 80px; margin-top:40px; float: right;margin-right:30px; '
+                                     'z-index: 999;',
+                            'onclick': 'window.open("/plugins/writeup/upload")',
+                        }
+                    )
+                    link.text = "上传题解"
+                    window.addnext(link)
+                else:
+                    link = etree.Element(
+                        'button',
+                        attrib={
+                            'class': 'btn btn-md btn-primary btn-outlined float-right',
+                            'style': 'position: sticky; top: 90px; margin-top:40px; float: right;margin-right:30px; '
+                                     'z-index: 999;',
+                            'onclick': 'window.open("/plugins/writeup/upload")',
+                        }
+                    )
+                    div1 = etree.SubElement(link, 'div')
+                    div1.text = 'Upload'
+                    div2 = etree.SubElement(link, 'div')
+                    div2.text = 'Writeup'
+                    window.addnext(link)
                 inserted = True
 
             if not inserted:
