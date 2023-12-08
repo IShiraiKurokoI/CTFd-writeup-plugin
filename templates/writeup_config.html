@@ -50,7 +50,7 @@
                         {% set name = get_config('writeup:name') %}
                         <div class="form-group">
                             <label for="name">
-                                {{ "writeup name format (Variable:user)" if en else "题解文件命名格式 (可用变量:user)" }}
+                                {{ "writeup name format (Variable:user,team=>user.team)" if en else "题解文件命名格式 (可用变量:user,team=>user.team)" }}
                             </label>
                             <div class="input-group">
                                 <input class="form-control" id='name' name='writeup:name'
