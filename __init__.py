@@ -5,6 +5,8 @@ import tempfile
 import zipfile
 from datetime import datetime
 from functools import wraps
+from PyPDF2 import PdfReader
+from io import BytesIO
 
 from flask_restx import Namespace, Resource
 from lxml import etree
@@ -187,6 +189,17 @@ def load(app):
                 'message': '文件不存在！'
             }, 200
 
+    def is_pdf(file):
+        try:
+            # 使用BytesIO将文件内容读取到内存中
+            file_content = BytesIO(file.read())
+            pdf_reader = PdfReader(file_content)
+            # 判断PDF文件是否能成功读取
+            print(len(pdf_reader.pages))
+            return True
+        except Exception as e:
+            return False
+
     @page_blueprint.route("/upload", methods=['GET', 'POST'])
     @authed_only
     def UserUpload():
@@ -221,6 +234,15 @@ def load(app):
                     }, 400
 
                 if file:
+                    try:
+                        if not is_pdf(file):
+                            log_simple("writeup", "[{date}] [Writeup] pdf校验失败，可能用户{name}上传的是恶意文件！",
+                                       name=user.name)
+                            return {'success': False, 'message': "文件未通过校验！"}, 400
+                    except:
+                        log_simple("writeup", "[{date}] [Writeup] pdf校验失败，可能用户{name}上传的是恶意文件！",
+                                   name=user.name)
+                        return {'success': False, 'message': "文件未通过校验！"}, 400
                     try:
                         filepath = os.path.join(writeup_folder, filename_for_store)
                         file.save(filepath)
