@@ -195,7 +195,7 @@ def load(app):
             file_content = BytesIO(file.read())
             pdf_reader = PdfReader(file_content)
             # 判断PDF文件是否能成功读取
-            print(len(pdf_reader.pages))
+            len(pdf_reader.pages)
             return True
         except Exception as e:
             return False
