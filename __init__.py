@@ -210,9 +210,17 @@ def load(app):
                     return redirect(url_for("challenges.listing"))
 
             if get_config("writeup:enabled"):
+                filename_for_store = ""
                 user = current_user.get_current_user()
-                filename_for_store = get_config("writeup:name").format(user=user)
-
+                try:
+                    filename_for_store = get_config("writeup:name").format(user=user)
+                except Exception as e:
+                    log_simple("writeup", "[{date}] [Writeup] 用户上传writeup时格式化名称出错，请检查后台文件名配置！：{e}",
+                               e=str(e))
+                    return {
+                        'success': False,
+                        'message': '后端处理失败，请联系管理员！'
+                    }, 500
                 upload_folder = os.path.join(
                     os.path.normpath(app.root_path), app.config.get("UPLOAD_FOLDER")
                 )
