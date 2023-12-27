@@ -191,8 +191,10 @@ def load(app):
 
     def is_pdf(file):
         try:
+            original_position = file.tell()
             # 使用BytesIO将文件内容读取到内存中
             file_content = BytesIO(file.read())
+            file.seek(original_position)
             pdf_reader = PdfReader(file_content)
             # 判断PDF文件是否能成功读取
             len(pdf_reader.pages)
